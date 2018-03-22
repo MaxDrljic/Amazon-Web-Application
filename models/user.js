@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const bcrype = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt-nodejs');
+const crypto = require('crypto');
 
 const UserSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
@@ -36,4 +37,14 @@ UserSchema.pre('save', (next) => {
 UserSchema.methods.comparePassword = (password) => {
   return bcrypt.compareSync(password, this.password);
 };
+
+UserSchema.methods.gravatar = (size) => {
+  if (!this.size) size = 200;
+  if (!this.email) {
+    return 'https://gravatar.com/avatar/?s' + size + '&d=retro';
+  } else {
+    let md5 = crypto.createHash('md5').update(this.email).digest('hex');
+    return 'https://gravatar.com/avatar/' + md5 + '?s' + size + '&d=retro'; 
+  }
+}
 
