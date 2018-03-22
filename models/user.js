@@ -21,7 +21,7 @@ const UserSchema = new Schema({
   created: { type: Date, default: Date.now }
 });
 
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function(next) {
   let user = this;
 
   if (!user.isModified('password')) return next();
@@ -48,3 +48,4 @@ UserSchema.methods.gravatar = (size) => {
   }
 }
 
+module.exports = mongoose.model('User', UserSchema);
