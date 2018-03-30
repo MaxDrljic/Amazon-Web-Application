@@ -4,6 +4,42 @@ const async = require('async');
 const Category = require('../models/category');
 const Product = require('../models/product');
 
+router.get('/products', (req, res, next) => {
+  const perPage= 10;
+  const page = req.query.page;
+
+  async.parallel([
+    function(callback) {
+      Product.count({}, (err, count) => {
+        let totalProducts = count;
+        callback(err, totalProducts);
+      });
+    },
+    function(callback) {
+      Product.find({})
+        .skip(perPage * page)
+        .limit(perPage)
+        .populate('category')
+        .populate('owner')
+        .exec((err, products) => {
+          if (err) return next(err);
+          callback(err, products);
+        });
+    }
+  ], function(err, results) {
+    let totalProducts = results[0];
+    let products = results[1];
+    res.json({
+      success: true,
+      message: 'category',
+      products: products,
+      totalProducts: totalProducts,
+      pages: Math.ceil(totalProducts / perPage)
+    });
+  });
+
+});
+
 router.route('/categories')
   .get((req, res, next) => {
     Category.find({}, (err, categories) => {
