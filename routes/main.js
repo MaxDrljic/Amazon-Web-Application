@@ -27,7 +27,7 @@ router.route('/categories')
   router.get('/categories/:id', (req, res, next) => {
     const perPage= 10;
     const page = req.query.page;
-    
+
     async.parallel([
       function(callback) {
         Product.count({ category: req.params.id }, (err, count) => {
@@ -65,6 +65,27 @@ router.route('/categories')
       });
     });
 
+  });
+
+  router.get('/product/:id', (req, res, next) => {
+    Product.findById({ _id: req.params.id })
+      .populate('category')
+      .populate('owner')
+      .exec((err, product) => {
+        if (err) {
+          res.json({
+            success: false,
+            message: 'Product is not found'
+          });
+        } else {
+          if (product) {
+            res.json({
+              success: true,
+              product: product
+            });
+          }
+        }
+      });
   });
 
   module.exports = router;
