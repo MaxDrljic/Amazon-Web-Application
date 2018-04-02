@@ -80,7 +80,7 @@ router.route('/categories')
           .limit(perPage)
           .populate('category')
           .populate('owner')
-          .populate('reviews')
+          .populate('review')
           .exec((err, products) => {
             if (err) return next(err);
             callback(err, products);
