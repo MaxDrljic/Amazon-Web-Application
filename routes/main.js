@@ -47,8 +47,8 @@ router.route('/categories')
         success: true,
         message: 'Success',
         categories: categories
-      });
-    });
+      })
+    })
   })
   .post((req, res, next) => {
     let category = new Category();
@@ -77,6 +77,7 @@ router.route('/categories')
           .limit(perPage)
           .populate('category')
           .populate('owner')
+          .populate('reviews')
           .exec((err, products) => {
             if (err) return next(err);
             callback(err, products);
@@ -107,6 +108,7 @@ router.route('/categories')
     Product.findById({ _id: req.params.id })
       .populate('category')
       .populate('owner')
+      .deepPopulate('reviews.owner')
       .exec((err, product) => {
         if (err) {
           res.json({
