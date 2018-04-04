@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const async = require('async');
+const stripe = require('stripe')('SecretKey');
 
 const Category = require('../models/category');
 const Product = require('../models/product');
