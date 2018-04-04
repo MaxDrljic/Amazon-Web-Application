@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const async = require('async');
-const stripe = require('stripe')('SecretKey');
+const stripe = require('stripe')('YourStripeKey');
 
 const Category = require('../models/category');
 const Product = require('../models/product');
@@ -168,7 +168,7 @@ router.route('/categories')
         source: stripeToken.id
       })
       .then(function(customer) {
-        return stripe.chargers.create({
+        return stripe.charges.create({
           amount: currentCharges,
           currency: 'usd',
           customer: customer.id
